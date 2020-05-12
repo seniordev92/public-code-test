@@ -2,34 +2,36 @@ import { AnyAction } from 'redux';
 import { createReducer, createActions } from 'reduxsauce';
 import Immutable from 'seamless-immutable';
 
+interface User {
+  userId: number;
+  firstName: string;
+  lastName: string;
+  avatar: string,
+  specialities: string[]
+}
+
+interface Asset {
+  assetId: number,
+  name: string,
+  geoCode: string,
+  kmFrom: number,
+  kmTo: number
+}
+
 export interface Ticket {
   ticketId: number;
   number: string;
   lastUpdatedTime: string;
-  "owner": {
-    "userId": 2,
-    "firstName": "Bruce",
-    "lastName": "Wayne",
-    "avatar": "https://raw.githubusercontent.com/Tapify/public-code-test/master/web-ui-test/bruceWayne.png",
-    "specialities": [
-      "Woodworking"
-    ]
-  },
+  owner: User,
   reportedTime: string,
   status: "assigned" | "completed" | "unassigned",
-  "description": "Ticket description",
-  "asset": {
-    "assetId": 1,
-    "name": "Sign",
-    "geoCode": "137",
-    "kmFrom": 7,
-    "kmTo": 20
-  }
+  description: string,
+  asset: Asset
 }
 
 /* ------------- Types and Action Creators ------------- */
 interface TicketActionsCreators {
-  getTicketsRequest: (email: string, password: string) => AnyAction;
+  getTicketsRequest: () => AnyAction;
   getTicketsSuccess: (data?: Ticket[]) => AnyAction;
   getTicketsFailure: (error: any) => AnyAction;
 }
@@ -40,7 +42,8 @@ interface TicketActionsTypes {
   GET_TICKETS_FAILURE: string;
 }
 export interface TicketState {
-  token?: string,
+  data: Ticket[],
+  selected?: Ticket,
   fetching: boolean,
   error?: any
 }
@@ -56,14 +59,14 @@ export default Creators;
 
 /* ------------- Initial State ------------- */
 export const INITIAL_STATE = Immutable<TicketState>({
-  token: undefined,
+  data: [],
   fetching: false,
   error: null
 });
 
 /* ------------- Selectors ------------- */
 export const TicketSelectors = {
-  getToken: (state: TicketState) => state.token
+  getTickets: (state: TicketState) => state.data
 };
 
 /* ------------- Reducers ------------- */
@@ -77,7 +80,7 @@ export const success = (state: Immutable.ImmutableObject<TicketState>, action: A
   return state.merge({
     fetching: false,
     error: null,
-    token: data,
+    data,
   } as TicketState);
 };
 
