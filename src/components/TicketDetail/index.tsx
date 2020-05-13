@@ -30,7 +30,7 @@ const Text = styled.p`
   &&& {
     margin: 9px;
   }
-`
+`;
 
 const Title = styled.div`
   display: flex;
@@ -43,19 +43,19 @@ const Title = styled.div`
 
 const TicketNumber = styled.span`
   color: #adadaa;
-`
+`;
 const TicketCard = styled(Card)`
   &&& {
     width: 100%;
     background-color: transparent;
-    box-shadow: 0 1px 3px 0 #2C2C2C, 0 0 0 2px #2C2C2C;
+    box-shadow: 0 1px 3px 0 #2c2c2c, 0 0 0 2px #2c2c2c;
     margin: 12px 0;
   }
-`
+`;
 
 const CardHeader = styled(Card.Content)`
   &&& {
-    background-color: #2C2C2C;
+    background-color: #2c2c2c;
     padding: 1px 0;
   }
   .header {
@@ -94,45 +94,64 @@ const Location = styled.div`
 `;
 
 interface Props {
-  ticket?: Ticket
+  ticket?: Ticket;
 }
 const TicketDetail = ({ ticket }: Props) => {
   let mainView;
   if (!ticket) {
     mainView = (
       <EmptyMsg>
-        <Image src="./assets/icon/icn_close.png" />
+        <Image src='./assets/icon/icn_close.png' />
         <Text>No ticket selected</Text>
       </EmptyMsg>
     );
   } else {
-    const { number, reportedTime, lastUpdatedTime, status, description, owner, asset } = ticket;
-    const { name, geoCode, kmFrom, kmTo } = asset
+    const {
+      number,
+      reportedTime,
+      lastUpdatedTime,
+      status,
+      description,
+      owner,
+      asset,
+    } = ticket;
+    const { name, geoCode, kmFrom, kmTo } = asset;
     mainView = (
       <div>
         <Title>
-          <div>TICKET NO. <TicketNumber>{number}</TicketNumber></div>
-          <div>LAST UPDATED <span>{moment(lastUpdatedTime, "YYYY-MM-DDThh:mm:ss").format("DD/MM/YY HH:mm")}</span></div>
+          <div>
+            TICKET NO. <TicketNumber>{number}</TicketNumber>
+          </div>
+          <div>
+            LAST UPDATED{' '}
+            <span>
+              {moment(lastUpdatedTime, 'YYYY-MM-DDThh:mm:ss').format(
+                'DD/MM/YY HH:mm'
+              )}
+            </span>
+          </div>
         </Title>
         <TicketCard>
-          <CardHeader header="Owner" />
+          <CardHeader header='Owner' />
           <UserInfo user={owner} />
         </TicketCard>
         <TicketCard>
-          <CardHeader header="Details" />
+          <CardHeader header='Details' />
           <Card.Content>
             <Feed>
               <Feed.Event>
                 <Content>
-                  <Feed.Date content="Reported" />
+                  <Feed.Date content='Reported' />
                   <Feed.Summary>
-                    {moment(reportedTime, "YYYY-MM-DDThh:mm:ss").format("DD/MM/YY HH:mm")}
+                    {moment(reportedTime, 'YYYY-MM-DDThh:mm:ss').format(
+                      'DD/MM/YY HH:mm'
+                    )}
                   </Feed.Summary>
                 </Content>
               </Feed.Event>
               <Feed.Event>
                 <Content>
-                  <Feed.Date content="Status" />
+                  <Feed.Date content='Status' />
                   <Feed.Summary>
                     <StatusMark status={status} />
                   </Feed.Summary>
@@ -140,7 +159,7 @@ const TicketDetail = ({ ticket }: Props) => {
               </Feed.Event>
               <Feed.Event>
                 <Content>
-                  <Feed.Date content="Description" />
+                  <Feed.Date content='Description' />
                   <Feed.Summary content={description} />
                 </Content>
               </Feed.Event>
@@ -148,26 +167,26 @@ const TicketDetail = ({ ticket }: Props) => {
           </Card.Content>
         </TicketCard>
         <TicketCard>
-          <CardHeader header="Asset" />
+          <CardHeader header='Asset' />
           <Card.Content>
             <Feed>
               <Feed.Event>
                 <Content>
-                  <Feed.Date content="Name" />
+                  <Feed.Date content='Name' />
                   <Feed.Summary content={name} />
                 </Content>
               </Feed.Event>
               <Feed.Event>
                 <Content>
-                  <Feed.Date content="GeoCode" />
+                  <Feed.Date content='GeoCode' />
                   <Feed.Summary content={geoCode} />
                 </Content>
               </Feed.Event>
               <Feed.Event>
                 <Content>
-                  <Feed.Date content="Location" />
+                  <Feed.Date content='Location' />
                   <Feed.Summary>
-                    <div style={{ display: 'flex', flexDirection: "row" }}>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <Location>{kmFrom.toFixed(3)}</Location>
                       <Location>{kmTo.toFixed(3)}</Location>
                     </div>
@@ -177,15 +196,10 @@ const TicketDetail = ({ ticket }: Props) => {
             </Feed>
           </Card.Content>
         </TicketCard>
-
       </div>
     );
   }
-  return (
-    <Container>
-      {mainView}
-    </Container>
-  );
+  return <Container>{mainView}</Container>;
 };
 
 export default TicketDetail;

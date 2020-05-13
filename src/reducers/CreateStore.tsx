@@ -1,4 +1,4 @@
-import { applyMiddleware, compose, createStore, Reducer } from "redux";
+import { applyMiddleware, compose, createStore, Reducer } from 'redux';
 import createSagaMiddleware, { SagaIterator } from 'redux-saga';
 
 declare global {
@@ -22,7 +22,8 @@ export default (rootReducer: Reducer<any>, rootSaga: () => SagaIterator) => {
 
   /* ------------- Assemble Middleware ------------- */
   enhancers.push(applyMiddleware(...middleware));
-  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  const composeEnhancers =
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   const store = createStore(rootReducer, composeEnhancers(...enhancers));
 
   // kick off root saga

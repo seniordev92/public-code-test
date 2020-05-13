@@ -8,7 +8,7 @@ import type { Ticket } from '../../reducers/TicketReducers';
 
 const Container = styled.div`
   padding: 0 10px;
-`
+`;
 const Title = styled.h3`
   &&& {
     margin: 7px 0px;
@@ -23,22 +23,22 @@ const Content = styled.div`
   margin: 10px 0;
 `;
 export interface StateProps {
-  tickets: Ticket[],
-  selected?: Ticket,
-  fetching: boolean,
-  error?: any
+  tickets: Ticket[];
+  selected?: Ticket;
+  fetching: boolean;
+  error?: any;
 }
 
 interface DispatchProps {
-  getTicketsRequest: () => void
-  selectTicket: (id: number) => void
+  getTicketsRequest: () => void;
+  selectTicket: (id: number) => void;
 }
 
 const Tickets = ({
   getTicketsRequest,
   selectTicket,
   tickets,
-  selected
+  selected,
 }: StateProps & DispatchProps) => {
   useEffect(() => {
     getTicketsRequest();
@@ -53,6 +53,6 @@ const Tickets = ({
       </Content>
     </Container>
   );
-}
+};
 
 export default Tickets;

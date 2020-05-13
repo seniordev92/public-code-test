@@ -1,9 +1,9 @@
 // <reference types="@types/webpack-env" />
-import { combineReducers } from "redux";
-import root from "../sagas";
-import configureStore from "./CreateStore";
-import type { TicketState } from "./TicketReducers";
-import { ticketReducer } from "./TicketReducers";
+import { combineReducers } from 'redux';
+import root from '../sagas';
+import configureStore from './CreateStore';
+import type { TicketState } from './TicketReducers';
+import { ticketReducer } from './TicketReducers';
 
 /* ------------- Assemble The Reducers ------------- */
 export const reducers = combineReducers({
@@ -11,7 +11,7 @@ export const reducers = combineReducers({
 });
 
 export interface State {
-  tickets: TicketState
+  tickets: TicketState;
 }
 
 export default () => {

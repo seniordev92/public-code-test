@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Table, Image } from 'semantic-ui-react'
+import { Table, Image } from 'semantic-ui-react';
 import moment from 'moment';
 
 import StatusMark from '../Status';
@@ -51,8 +51,6 @@ const TableWrapper = styled.div`
     background: #3e3e3e !important;
     border-radius: 0px;
   }
-
-
 `;
 const TicketsTable = styled(Table)`
   &&& {
@@ -72,11 +70,11 @@ const HeaderCell = styled(Table.HeaderCell)`
 `;
 
 const Row = styled(Table.Row)`
-  background-color: ${props => props.selected ? '#414141' : 'transparent'};
+  background-color: ${props => (props.selected ? '#414141' : 'transparent')};
 `;
 const Cell = styled(Table.Cell)`
   &&& {
-    color: #CCCCCC;
+    color: #cccccc;
     border-color: #212121;
     padding: 6px 0;
   }
@@ -90,10 +88,9 @@ const Avatar = styled(Image)`
   }
 `;
 
-
 interface Props {
-  tickets: Ticket[],
-  onSelect: (id: number) => void
+  tickets: Ticket[];
+  onSelect: (id: number) => void;
 }
 
 const TicketList = ({ tickets, onSelect }: Props) => {
@@ -101,8 +98,7 @@ const TicketList = ({ tickets, onSelect }: Props) => {
   const [filteredTickets, setFilteredTickets] = useState(tickets);
   const [searchKey, setSearchKey] = useState('');
 
-  useEffect(() => {
-  }, [tickets]);
+  useEffect(() => {}, [tickets]);
 
   useEffect(() => {
     if (!searchKey) {
@@ -117,12 +113,16 @@ const TicketList = ({ tickets, onSelect }: Props) => {
   const onClickTicket = (ticketId: number) => {
     setSelectedTicket(ticketId);
     onSelect(ticketId);
-  }
+  };
   return (
     <Container>
-      <SearchContainer className="ui action left icon input">
-        <SearchInput type="text" value={searchKey} onChange={(e) => setSearchKey(e.target.value)}/>
-        <SearchIcon aria-hidden="true" className="search icon"></SearchIcon>
+      <SearchContainer className='ui action left icon input'>
+        <SearchInput
+          type='text'
+          value={searchKey}
+          onChange={e => setSearchKey(e.target.value)}
+        />
+        <SearchIcon aria-hidden='true' className='search icon'></SearchIcon>
       </SearchContainer>
       <TableWrapper>
         <TicketsTable singleLine selectable>
@@ -135,34 +135,40 @@ const TicketList = ({ tickets, onSelect }: Props) => {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {
-              filteredTickets.map(ticket => {
-                const {
-                  reportedTime,
-                  asset: { name },
-                  owner: { avatar },
-                  ticketId,
-                  status
-                } = ticket;
-                return (
-                  <Row key={ticketId} onClick={() => onClickTicket(ticketId)} selected={selectedTicket === ticketId}>
-                    <Cell>
-                      <Avatar src={avatar} avatar />
-                    </Cell>
-                    <Cell>{moment(reportedTime, "YYYY-MM-DDThh:mm:ss").format("DD/MM/YY HH:mm")}</Cell>
-                    <Cell>{name}</Cell>
-                    <Cell>
-                      <StatusMark status={status} />
-                    </Cell>
-                  </Row>
-                );
-              })
-            }
+            {filteredTickets.map(ticket => {
+              const {
+                reportedTime,
+                asset: { name },
+                owner: { avatar },
+                ticketId,
+                status,
+              } = ticket;
+              return (
+                <Row
+                  key={ticketId}
+                  onClick={() => onClickTicket(ticketId)}
+                  selected={selectedTicket === ticketId}
+                >
+                  <Cell>
+                    <Avatar src={avatar} avatar />
+                  </Cell>
+                  <Cell>
+                    {moment(reportedTime, 'YYYY-MM-DDThh:mm:ss').format(
+                      'DD/MM/YY HH:mm'
+                    )}
+                  </Cell>
+                  <Cell>{name}</Cell>
+                  <Cell>
+                    <StatusMark status={status} />
+                  </Cell>
+                </Row>
+              );
+            })}
           </Table.Body>
         </TicketsTable>
       </TableWrapper>
     </Container>
-  )
+  );
 };
 
 export default TicketList;

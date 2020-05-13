@@ -12,7 +12,7 @@ const StatusWrapper = styled.div`
 `;
 
 interface Props {
-  status: Status
+  status: Status;
 }
 
 const StatusLabel = ({ status }: Props) => {
@@ -33,11 +33,7 @@ const StatusLabel = ({ status }: Props) => {
       statusColor = '#626262';
       break;
   }
-  return (
-    <StatusWrapper color={statusColor}>
-      {statusText}
-    </StatusWrapper>
-  );
-}
+  return <StatusWrapper color={statusColor}>{statusText}</StatusWrapper>;
+};
 
 export default StatusLabel;

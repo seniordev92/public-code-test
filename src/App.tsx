@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Tickets from './containers/Tickets';
 import './App.css';
@@ -13,7 +9,7 @@ function App() {
     <Router>
       <div>
         <Switch>
-          <Route path="/">
+          <Route path='/'>
             <Tickets />
           </Route>
         </Switch>

@@ -1,12 +1,12 @@
-import { all, takeLatest } from "redux-saga/effects";
+import { all, takeLatest } from 'redux-saga/effects';
 
 import API from '../services/Api';
 
 /* ------------- Types ------------- */
-import { TicketTypes } from "../reducers/TicketReducers";
+import { TicketTypes } from '../reducers/TicketReducers';
 
 /* ------------- Sagas ------------- */
-import { getTickets } from "./TicketSagas";
+import { getTickets } from './TicketSagas';
 
 /* ------------- API ------------- */
 

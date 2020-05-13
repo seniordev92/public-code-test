@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Card, Feed } from 'semantic-ui-react';
-import type { User } from '../../reducers/TicketReducers'
+import type { User } from '../../reducers/TicketReducers';
 
 const Content = styled(Card.Content)`
   &&& {
@@ -30,7 +30,7 @@ const Info = styled(Feed.Content)`
 `;
 
 interface Props {
-  user: User
+  user: User;
 }
 
 const UserInfo = ({ user }: Props) => {
@@ -42,9 +42,7 @@ const UserInfo = ({ user }: Props) => {
           <Avatar image={avatar} />
           <Info>
             <Feed.Date content={`${firstName} ${lastName}`} />
-            <Feed.Summary>
-              {specialities.join(',').toUpperCase()}
-            </Feed.Summary>
+            <Feed.Summary>{specialities.join(',').toUpperCase()}</Feed.Summary>
           </Info>
         </Feed.Event>
       </Feed>

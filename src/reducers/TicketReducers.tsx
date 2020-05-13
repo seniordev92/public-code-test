@@ -6,29 +6,29 @@ export interface User {
   userId: number;
   firstName: string;
   lastName: string;
-  avatar: string,
-  specialities: string[]
+  avatar: string;
+  specialities: string[];
 }
 
 interface Asset {
-  assetId: number,
-  name: string,
-  geoCode: string,
-  kmFrom: number,
-  kmTo: number
+  assetId: number;
+  name: string;
+  geoCode: string;
+  kmFrom: number;
+  kmTo: number;
 }
 
-export type Status = "assigned" | "completed" | "unassigned";
+export type Status = 'assigned' | 'completed' | 'unassigned';
 
 export interface Ticket {
   ticketId: number;
   number: string;
   lastUpdatedTime: string;
-  owner: User,
-  reportedTime: string,
-  status: Status,
-  description: string,
-  asset: Asset
+  owner: User;
+  reportedTime: string;
+  status: Status;
+  description: string;
+  asset: Asset;
 }
 
 /* ------------- Types and Action Creators ------------- */
@@ -47,17 +47,20 @@ interface TicketActionsTypes {
 }
 
 export interface TicketState {
-  data: Ticket[],
-  selected?: Ticket,
-  fetching: boolean,
-  error?: any
+  data: Ticket[];
+  selected?: Ticket;
+  fetching: boolean;
+  error?: any;
 }
 
-const { Types, Creators } = createActions<TicketActionsTypes, TicketActionsCreators>({
+const { Types, Creators } = createActions<
+  TicketActionsTypes,
+  TicketActionsCreators
+>({
   getTicketsRequest: [],
   getTicketsSuccess: ['data'],
   getTicketsFailure: ['error'],
-  selectTicket: ['id']
+  selectTicket: ['id'],
 });
 
 export const TicketTypes = Types;
@@ -73,16 +76,20 @@ export const INITIAL_STATE = Immutable<TicketState>({
 
 /* ------------- Selectors ------------- */
 export const TicketSelectors = {
-  getTickets: (state: TicketState) => state.data
+  getTickets: (state: TicketState) => state.data,
 };
 
 /* ------------- Reducers ------------- */
 
 // request the data from an api
-export const request = (state: Immutable.ImmutableObject<TicketState>) => state.merge({ fetching: true });
+export const request = (state: Immutable.ImmutableObject<TicketState>) =>
+  state.merge({ fetching: true });
 
 // successful api lookup
-export const success = (state: Immutable.ImmutableObject<TicketState>, action: AnyAction) => {
+export const success = (
+  state: Immutable.ImmutableObject<TicketState>,
+  action: AnyAction
+) => {
   const { data } = action;
   return state.merge({
     fetching: false,
@@ -92,16 +99,22 @@ export const success = (state: Immutable.ImmutableObject<TicketState>, action: A
   } as TicketState);
 };
 
-export const select = (state: Immutable.ImmutableObject<TicketState>, action: AnyAction) => {
+export const select = (
+  state: Immutable.ImmutableObject<TicketState>,
+  action: AnyAction
+) => {
   const { id } = action;
   const selected = state.data.find(({ ticketId }) => ticketId === id);
   return state.merge({
     selected,
   } as TicketState);
-}
+};
 
 // Something went wrong somewhere.
-export const failure = (state: Immutable.ImmutableObject<TicketState>, action: AnyAction) => {
+export const failure = (
+  state: Immutable.ImmutableObject<TicketState>,
+  action: AnyAction
+) => {
   const { error } = action;
   return state.merge({ fetching: false, error });
 };
