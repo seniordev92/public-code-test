@@ -10,7 +10,7 @@ import type { Ticket } from '../reducers/TicketReducers';
 
 export function* getTickets(api: TicketApi, action: AnyAction): SagaIterator {
   try {
-    const response: ApiResponse<Ticket[]>  = yield call(
+    const response: ApiResponse<Ticket[]> = yield call(
       api.getList,
     );
     if (response.ok) {

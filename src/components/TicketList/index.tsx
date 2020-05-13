@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Table, Image } from 'semantic-ui-react'
-
 import moment from 'moment';
+
+import StatusMark from '../Status';
 
 import type { Ticket } from '../../reducers/TicketReducers';
 
 const Container = styled.div`
   width: 380px;
-  height: 710px;
 `;
 
 const SearchContainer = styled.div`
@@ -19,118 +19,146 @@ const SearchContainer = styled.div`
 `;
 
 const SearchInput = styled.input`
-  background-color: transparent !important;
+  &&& {
+    background-color: transparent;
+    color: #8b8b8b !important;
+  }
+  :focus {
+    -webkit-tap-highlight-color: transparent !important;
+    background-color: transparent !important;
+  }
 `;
 
 const SearchIcon = styled.i`
-  color: #8b8b8b;
   width: 24px !important;
+  color: #8b8b8b;
 `;
 
 const TableWrapper = styled.div`
-  height: 674px;
+  &&& {
+    margin-top: 10px;
+    height: calc(100vh - 90px);
+  }
   overflow-y: scroll;
-  margin: 10px 0 !important;
+  &::-webkit-scrollbar {
+    width: 13px;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 0px;
+    background: #212121;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #3e3e3e !important;
+    border-radius: 0px;
+  }
+
+
 `;
 const TicketsTable = styled(Table)`
-  background-color: #323232 !important;
-  font-size: 9px !important;
+  &&& {
+    background-color: #323232;
+    font-size: 9px;
+  }
   padding: 0 15px;
 `;
 
 const HeaderCell = styled(Table.HeaderCell)`
-  background-color: #323232 !important;
-  color: #717070 !important;
-  padding: 9px 0 !important;
-  border-color: #212121 !important;
+  &&& {
+    background-color: #323232;
+    border-color: #212121;
+    color: #717070;
+    padding: 9px 0;
+  }
 `;
 
-
+const Row = styled(Table.Row)`
+  background-color: ${props => props.selected ? '#414141' : 'transparent'};
+`;
 const Cell = styled(Table.Cell)`
-  color: #CCCCCC !important;
-  padding: 6px 0 !important;
+  &&& {
+    color: #CCCCCC;
+    border-color: #212121;
+    padding: 6px 0;
+  }
   font-size: 12px;
-  border-color: #212121 !important;
 `;
 
 const Avatar = styled(Image)`
-  width: 29px !important;
-  height: 29px !important;
+  &&& {
+    width: 29px;
+    height: 29px;
+  }
 `;
 
-const Status = styled.div`
-  color: ${props => props.color};
-  width: 50px;
-  height: 22px;
-  border: 1px solid #212121;
-  border-radius: 4px;
-  text-align: center;
-`
+
 interface Props {
-  tickets: Ticket[]
+  tickets: Ticket[],
+  onSelect: (id: number) => void
 }
 
-const TicketList = ({ tickets }: Props) => {
+const TicketList = ({ tickets, onSelect }: Props) => {
+  const [selectedTicket, setSelectedTicket] = useState(-1);
+  const [filteredTickets, setFilteredTickets] = useState(tickets);
+  const [searchKey, setSearchKey] = useState('');
+
+  useEffect(() => {
+  }, [tickets]);
+
+  useEffect(() => {
+    if (!searchKey) {
+      setFilteredTickets(tickets);
+    }
+    const result = tickets.filter(ticket => {
+      const name = ticket.asset.name.toLowerCase();
+      return name.indexOf(searchKey.toLowerCase()) >= 0;
+    });
+    setFilteredTickets(result);
+  }, [tickets, searchKey]);
+  const onClickTicket = (ticketId: number) => {
+    setSelectedTicket(ticketId);
+    onSelect(ticketId);
+  }
   return (
     <Container>
       <SearchContainer className="ui action left icon input">
-        <SearchInput type="text" />
+        <SearchInput type="text" value={searchKey} onChange={(e) => setSearchKey(e.target.value)}/>
         <SearchIcon aria-hidden="true" className="search icon"></SearchIcon>
       </SearchContainer>
       <TableWrapper>
-        <TicketsTable singleLine>
+        <TicketsTable singleLine selectable>
           <Table.Header>
             <Table.Row>
-              <HeaderCell style={{width: 48}}>OWNER</HeaderCell>
-              <HeaderCell style={{width: 93}}>REPORTED</HeaderCell>
-              <HeaderCell style={{width: 145}}>ASSET</HeaderCell>
+              <HeaderCell style={{ width: 48 }}>OWNER</HeaderCell>
+              <HeaderCell style={{ width: 93 }}>REPORTED</HeaderCell>
+              <HeaderCell style={{ width: 145 }}>ASSET</HeaderCell>
               <HeaderCell>STATUS</HeaderCell>
             </Table.Row>
           </Table.Header>
-          {
-            tickets.map(ticket => {
-              const {
-                reportedTime,
-                asset: { name },
-                owner: { avatar },
-                ticketId,
-                status
-              } = ticket;
-              let statusText: string;
-              let statusColor: string;
-              switch (status) {
-                case 'assigned':
-                  statusText = 'ASD';
-                  statusColor = '#edb41c';
-                  break;
-                case 'completed':
-                  statusText = 'COM';
-                  statusColor = '#0fa540';
-                  break;
-                case 'unassigned':
-                default:
-                  statusText = 'UNA';
-                  statusColor = '#626262';
-                  break;
-              }
-              return (
-                <Table.Body key={ticketId}>
-                  <Table.Row>
+          <Table.Body>
+            {
+              filteredTickets.map(ticket => {
+                const {
+                  reportedTime,
+                  asset: { name },
+                  owner: { avatar },
+                  ticketId,
+                  status
+                } = ticket;
+                return (
+                  <Row key={ticketId} onClick={() => onClickTicket(ticketId)} selected={selectedTicket === ticketId}>
                     <Cell>
                       <Avatar src={avatar} avatar />
                     </Cell>
-                    <Cell>{moment(reportedTime, "YYYY-MM-DDThh:mm:ss").format("DD/MM/YY hh:mm")}</Cell>
+                    <Cell>{moment(reportedTime, "YYYY-MM-DDThh:mm:ss").format("DD/MM/YY HH:mm")}</Cell>
                     <Cell>{name}</Cell>
                     <Cell>
-                      <Status color={statusColor}>
-                        {statusText}
-                      </Status>
+                      <StatusMark status={status} />
                     </Cell>
-                  </Table.Row>
-                </Table.Body>
-              )
-            })
-          }
+                  </Row>
+                );
+              })
+            }
+          </Table.Body>
         </TicketsTable>
       </TableWrapper>
     </Container>

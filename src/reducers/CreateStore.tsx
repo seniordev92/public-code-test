@@ -17,7 +17,7 @@ export default (rootReducer: Reducer<any>, rootSaga: () => SagaIterator) => {
   /* ------------- Analytics Middleware ------------- */
 
   /* ------------- Saga Middleware ------------- */
-  const sagaMiddleware = createSagaMiddleware({ });
+  const sagaMiddleware = createSagaMiddleware({});
   middleware.push(sagaMiddleware);
 
   /* ------------- Assemble Middleware ------------- */
