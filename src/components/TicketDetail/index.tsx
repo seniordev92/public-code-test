@@ -9,11 +9,8 @@ import StatusMark from '../Status';
 import type { Ticket } from '../../reducers/TicketReducers';
 
 const Container = styled.div`
-  &&& {
-    width: 990px;
-  }
+  flex: 1;
   background-color: #323232;
-  height: 710px;
   margin-left: 10px;
   padding: 16px;
 `;
@@ -35,11 +32,24 @@ const Text = styled.p`
   }
 `
 
+const Title = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: #5c5b5b;
+  font-size: 10px;
+  line-height: 9px;
+`;
+
+const TicketNumber = styled.span`
+  color: #adadaa;
+`
 const TicketCard = styled(Card)`
   &&& {
     width: 100%;
     background-color: transparent;
     box-shadow: 0 1px 3px 0 #2C2C2C, 0 0 0 2px #2C2C2C;
+    margin: 12px 0;
   }
 `
 
@@ -75,11 +85,12 @@ const Location = styled.div`
   &&& {
     color: #9b9b9b;
   }
-  width: 50px;
+  width: 68px;
   height: 22px;
   border: 1px solid #212121;
   border-radius: 4px;
   text-align: center;
+  margin-right: 3px;
 `;
 
 interface Props {
@@ -95,19 +106,17 @@ const TicketDetail = ({ ticket }: Props) => {
       </EmptyMsg>
     );
   } else {
-    const { number, reportedTime, status, description, owner, asset } = ticket;
-    console.log('Nala', ticket);
+    const { number, reportedTime, lastUpdatedTime, status, description, owner, asset } = ticket;
     const { name, geoCode, kmFrom, kmTo } = asset
-    // const { }
     mainView = (
       <div>
-        <div>
-          <div>TICKET NO. <span>{number}</span></div>
-          <div>LAST UPDATED <span>{number}</span></div>
-        </div>
+        <Title>
+          <div>TICKET NO. <TicketNumber>{number}</TicketNumber></div>
+          <div>LAST UPDATED <span>{moment(lastUpdatedTime, "YYYY-MM-DDThh:mm:ss").format("DD/MM/YY HH:mm")}</span></div>
+        </Title>
         <TicketCard>
           <CardHeader header="Owner" />
-          <UserInfo user={owner}/>
+          <UserInfo user={owner} />
         </TicketCard>
         <TicketCard>
           <CardHeader header="Details" />
@@ -158,11 +167,10 @@ const TicketDetail = ({ ticket }: Props) => {
                 <Content>
                   <Feed.Date content="Location" />
                   <Feed.Summary>
-                    <div style={{display: 'flex', flexDirection:"row"}}>
-                      <Location>{kmFrom}</Location>
-                      <Location>{kmTo}</Location>
+                    <div style={{ display: 'flex', flexDirection: "row" }}>
+                      <Location>{kmFrom.toFixed(3)}</Location>
+                      <Location>{kmTo.toFixed(3)}</Location>
                     </div>
-                    {/* {specialities.join(',').toUpperCase()} */}
                   </Feed.Summary>
                 </Content>
               </Feed.Event>

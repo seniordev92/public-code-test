@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Table, Image } from 'semantic-ui-react'
 import moment from 'moment';
@@ -9,7 +9,6 @@ import type { Ticket } from '../../reducers/TicketReducers';
 
 const Container = styled.div`
   width: 380px;
-  height: 710px;
 `;
 
 const SearchContainer = styled.div`
@@ -22,22 +21,38 @@ const SearchContainer = styled.div`
 const SearchInput = styled.input`
   &&& {
     background-color: transparent;
+    color: #8b8b8b !important;
+  }
+  :focus {
+    -webkit-tap-highlight-color: transparent !important;
+    background-color: transparent !important;
   }
 `;
 
 const SearchIcon = styled.i`
-  &&& {
-    width: 24px;
-  }
+  width: 24px !important;
   color: #8b8b8b;
 `;
 
 const TableWrapper = styled.div`
   &&& {
-    margin: 10px 0;
+    margin-top: 10px;
+    height: calc(100vh - 90px);
   }
-  height: 674px;
   overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 13px;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 0px;
+    background: #212121;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #3e3e3e !important;
+    border-radius: 0px;
+  }
+
+
 `;
 const TicketsTable = styled(Table)`
   &&& {
@@ -56,6 +71,9 @@ const HeaderCell = styled(Table.HeaderCell)`
   }
 `;
 
+const Row = styled(Table.Row)`
+  background-color: ${props => props.selected ? '#414141' : 'transparent'};
+`;
 const Cell = styled(Table.Cell)`
   &&& {
     color: #CCCCCC;
@@ -80,6 +98,22 @@ interface Props {
 
 const TicketList = ({ tickets, onSelect }: Props) => {
   const [selectedTicket, setSelectedTicket] = useState(-1);
+  const [filteredTickets, setFilteredTickets] = useState(tickets);
+  const [searchKey, setSearchKey] = useState('');
+
+  useEffect(() => {
+  }, [tickets]);
+
+  useEffect(() => {
+    if (!searchKey) {
+      setFilteredTickets(tickets);
+    }
+    const result = tickets.filter(ticket => {
+      const name = ticket.asset.name.toLowerCase();
+      return name.indexOf(searchKey.toLowerCase()) >= 0;
+    });
+    setFilteredTickets(result);
+  }, [tickets, searchKey]);
   const onClickTicket = (ticketId: number) => {
     setSelectedTicket(ticketId);
     onSelect(ticketId);
@@ -87,7 +121,7 @@ const TicketList = ({ tickets, onSelect }: Props) => {
   return (
     <Container>
       <SearchContainer className="ui action left icon input">
-        <SearchInput type="text" />
+        <SearchInput type="text" value={searchKey} onChange={(e) => setSearchKey(e.target.value)}/>
         <SearchIcon aria-hidden="true" className="search icon"></SearchIcon>
       </SearchContainer>
       <TableWrapper>
@@ -102,7 +136,7 @@ const TicketList = ({ tickets, onSelect }: Props) => {
           </Table.Header>
           <Table.Body>
             {
-              tickets.map(ticket => {
+              filteredTickets.map(ticket => {
                 const {
                   reportedTime,
                   asset: { name },
@@ -110,9 +144,8 @@ const TicketList = ({ tickets, onSelect }: Props) => {
                   ticketId,
                   status
                 } = ticket;
-
                 return (
-                  <Table.Row key={ticketId} onClick={() => onClickTicket(ticketId)}>
+                  <Row key={ticketId} onClick={() => onClickTicket(ticketId)} selected={selectedTicket === ticketId}>
                     <Cell>
                       <Avatar src={avatar} avatar />
                     </Cell>
@@ -121,7 +154,7 @@ const TicketList = ({ tickets, onSelect }: Props) => {
                     <Cell>
                       <StatusMark status={status} />
                     </Cell>
-                  </Table.Row>
+                  </Row>
                 );
               })
             }

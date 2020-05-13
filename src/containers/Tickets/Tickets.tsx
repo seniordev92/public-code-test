@@ -20,7 +20,7 @@ const Title = styled.h3`
 
 const Content = styled.div`
   display: flex;
-  margin: 11px 0;
+  margin: 10px 0;
 `;
 export interface StateProps {
   tickets: Ticket[],

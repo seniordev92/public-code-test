@@ -5,7 +5,7 @@ import type { User } from '../../reducers/TicketReducers'
 
 const Content = styled(Card.Content)`
   &&& {
-    padding: 13px;
+    padding: 12px;
   }
   .date {
     font-size: 11px !important;
@@ -21,6 +21,12 @@ const Content = styled(Card.Content)`
 const Avatar = styled(Feed.Label)`
   width: 40px !important;
   height: 40px !important;
+  margin-left: 5px;
+`;
+
+const Info = styled(Feed.Content)`
+  margin-left: 8px !important;
+  margin-top: 10px !important;
 `;
 
 interface Props {
@@ -34,12 +40,12 @@ const UserInfo = ({ user }: Props) => {
       <Feed>
         <Feed.Event>
           <Avatar image={avatar} />
-          <Feed.Content>
+          <Info>
             <Feed.Date content={`${firstName} ${lastName}`} />
             <Feed.Summary>
               {specialities.join(',').toUpperCase()}
             </Feed.Summary>
-          </Feed.Content>
+          </Info>
         </Feed.Event>
       </Feed>
     </Content>
