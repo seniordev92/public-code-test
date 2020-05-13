@@ -13,7 +13,8 @@ const mapStateToProps = ({ tickets }: State): StateProps => {
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
-  getTicketsRequest: () => dispatch(TicketActions.getTicketsRequest())
+  getTicketsRequest: () => dispatch(TicketActions.getTicketsRequest()),
+  selectTicket: (id: number) => dispatch(TicketActions.selectTicket(id))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tickets);

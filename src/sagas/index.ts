@@ -15,7 +15,7 @@ import { getTickets } from "./TicketSagas";
 const ticketApi = API.tickets();
 
 /* ------------- Connect Types To Sagas ------------- */
-export default function * root() {
+export default function* root() {
   yield all([
     // some sagas only receive an action
     takeLatest(TicketTypes.GET_TICKETS_REQUEST, getTickets, ticketApi),

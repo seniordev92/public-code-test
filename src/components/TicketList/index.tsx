@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Table, Image } from 'semantic-ui-react'
-
 import moment from 'moment';
+
+import StatusMark from '../Status';
 
 import type { Ticket } from '../../reducers/TicketReducers';
 
@@ -19,58 +20,70 @@ const SearchContainer = styled.div`
 `;
 
 const SearchInput = styled.input`
-  background-color: transparent !important;
+  &&& {
+    background-color: transparent;
+  }
 `;
 
 const SearchIcon = styled.i`
+  &&& {
+    width: 24px;
+  }
   color: #8b8b8b;
-  width: 24px !important;
 `;
 
 const TableWrapper = styled.div`
+  &&& {
+    margin: 10px 0;
+  }
   height: 674px;
   overflow-y: scroll;
-  margin: 10px 0 !important;
 `;
 const TicketsTable = styled(Table)`
-  background-color: #323232 !important;
-  font-size: 9px !important;
+  &&& {
+    background-color: #323232;
+    font-size: 9px;
+  }
   padding: 0 15px;
 `;
 
 const HeaderCell = styled(Table.HeaderCell)`
-  background-color: #323232 !important;
-  color: #717070 !important;
-  padding: 9px 0 !important;
-  border-color: #212121 !important;
+  &&& {
+    background-color: #323232;
+    border-color: #212121;
+    color: #717070;
+    padding: 9px 0;
+  }
 `;
 
-
 const Cell = styled(Table.Cell)`
-  color: #CCCCCC !important;
-  padding: 6px 0 !important;
+  &&& {
+    color: #CCCCCC;
+    border-color: #212121;
+    padding: 6px 0;
+  }
   font-size: 12px;
-  border-color: #212121 !important;
 `;
 
 const Avatar = styled(Image)`
-  width: 29px !important;
-  height: 29px !important;
+  &&& {
+    width: 29px;
+    height: 29px;
+  }
 `;
 
-const Status = styled.div`
-  color: ${props => props.color};
-  width: 50px;
-  height: 22px;
-  border: 1px solid #212121;
-  border-radius: 4px;
-  text-align: center;
-`
+
 interface Props {
-  tickets: Ticket[]
+  tickets: Ticket[],
+  onSelect: (id: number) => void
 }
 
-const TicketList = ({ tickets }: Props) => {
+const TicketList = ({ tickets, onSelect }: Props) => {
+  const [selectedTicket, setSelectedTicket] = useState(-1);
+  const onClickTicket = (ticketId: number) => {
+    setSelectedTicket(ticketId);
+    onSelect(ticketId);
+  }
   return (
     <Container>
       <SearchContainer className="ui action left icon input">
@@ -78,59 +91,41 @@ const TicketList = ({ tickets }: Props) => {
         <SearchIcon aria-hidden="true" className="search icon"></SearchIcon>
       </SearchContainer>
       <TableWrapper>
-        <TicketsTable singleLine>
+        <TicketsTable singleLine selectable>
           <Table.Header>
             <Table.Row>
-              <HeaderCell style={{width: 48}}>OWNER</HeaderCell>
-              <HeaderCell style={{width: 93}}>REPORTED</HeaderCell>
-              <HeaderCell style={{width: 145}}>ASSET</HeaderCell>
+              <HeaderCell style={{ width: 48 }}>OWNER</HeaderCell>
+              <HeaderCell style={{ width: 93 }}>REPORTED</HeaderCell>
+              <HeaderCell style={{ width: 145 }}>ASSET</HeaderCell>
               <HeaderCell>STATUS</HeaderCell>
             </Table.Row>
           </Table.Header>
-          {
-            tickets.map(ticket => {
-              const {
-                reportedTime,
-                asset: { name },
-                owner: { avatar },
-                ticketId,
-                status
-              } = ticket;
-              let statusText: string;
-              let statusColor: string;
-              switch (status) {
-                case 'assigned':
-                  statusText = 'ASD';
-                  statusColor = '#edb41c';
-                  break;
-                case 'completed':
-                  statusText = 'COM';
-                  statusColor = '#0fa540';
-                  break;
-                case 'unassigned':
-                default:
-                  statusText = 'UNA';
-                  statusColor = '#626262';
-                  break;
-              }
-              return (
-                <Table.Body key={ticketId}>
-                  <Table.Row>
+          <Table.Body>
+            {
+              tickets.map(ticket => {
+                const {
+                  reportedTime,
+                  asset: { name },
+                  owner: { avatar },
+                  ticketId,
+                  status
+                } = ticket;
+
+                return (
+                  <Table.Row key={ticketId} onClick={() => onClickTicket(ticketId)}>
                     <Cell>
                       <Avatar src={avatar} avatar />
                     </Cell>
-                    <Cell>{moment(reportedTime, "YYYY-MM-DDThh:mm:ss").format("DD/MM/YY hh:mm")}</Cell>
+                    <Cell>{moment(reportedTime, "YYYY-MM-DDThh:mm:ss").format("DD/MM/YY HH:mm")}</Cell>
                     <Cell>{name}</Cell>
                     <Cell>
-                      <Status color={statusColor}>
-                        {statusText}
-                      </Status>
+                      <StatusMark status={status} />
                     </Cell>
                   </Table.Row>
-                </Table.Body>
-              )
-            })
-          }
+                );
+              })
+            }
+          </Table.Body>
         </TicketsTable>
       </TableWrapper>
     </Container>

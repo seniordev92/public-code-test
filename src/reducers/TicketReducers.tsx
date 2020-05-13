@@ -2,7 +2,7 @@ import { AnyAction } from 'redux';
 import { createReducer, createActions } from 'reduxsauce';
 import Immutable from 'seamless-immutable';
 
-interface User {
+export interface User {
   userId: number;
   firstName: string;
   lastName: string;
@@ -18,13 +18,15 @@ interface Asset {
   kmTo: number
 }
 
+export type Status = "assigned" | "completed" | "unassigned";
+
 export interface Ticket {
   ticketId: number;
   number: string;
   lastUpdatedTime: string;
   owner: User,
   reportedTime: string,
-  status: "assigned" | "completed" | "unassigned",
+  status: Status,
   description: string,
   asset: Asset
 }
@@ -34,13 +36,16 @@ interface TicketActionsCreators {
   getTicketsRequest: () => AnyAction;
   getTicketsSuccess: (data?: Ticket[]) => AnyAction;
   getTicketsFailure: (error: any) => AnyAction;
+  selectTicket: (id: number) => AnyAction;
 }
 
 interface TicketActionsTypes {
   GET_TICKETS_REQUEST: string;
   GET_TICKETS_SUCCESS: string;
   GET_TICKETS_FAILURE: string;
+  SELECT_TICKET: string;
 }
+
 export interface TicketState {
   data: Ticket[],
   selected?: Ticket,
@@ -52,6 +57,7 @@ const { Types, Creators } = createActions<TicketActionsTypes, TicketActionsCreat
   getTicketsRequest: [],
   getTicketsSuccess: ['data'],
   getTicketsFailure: ['error'],
+  selectTicket: ['id']
 });
 
 export const TicketTypes = Types;
@@ -61,7 +67,8 @@ export default Creators;
 export const INITIAL_STATE = Immutable<TicketState>({
   data: [],
   fetching: false,
-  error: null
+  error: undefined,
+  selected: undefined,
 });
 
 /* ------------- Selectors ------------- */
@@ -79,10 +86,19 @@ export const success = (state: Immutable.ImmutableObject<TicketState>, action: A
   const { data } = action;
   return state.merge({
     fetching: false,
-    error: null,
+    error: undefined,
     data,
+    // selected: undefined
   } as TicketState);
 };
+
+export const select = (state: Immutable.ImmutableObject<TicketState>, action: AnyAction) => {
+  const { id } = action;
+  const selected = state.data.find(({ ticketId }) => ticketId === id);
+  return state.merge({
+    selected,
+  } as TicketState);
+}
 
 // Something went wrong somewhere.
 export const failure = (state: Immutable.ImmutableObject<TicketState>, action: AnyAction) => {
@@ -102,4 +118,5 @@ export const ticketReducer = createReducer(INITIAL_STATE, {
   [Types.GET_TICKETS_REQUEST]: request,
   [Types.GET_TICKETS_SUCCESS]: success,
   [Types.GET_TICKETS_FAILURE]: failure,
+  [Types.SELECT_TICKET]: select,
 });
